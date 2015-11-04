@@ -3,111 +3,122 @@
 :- dynamic([xpozytywne/2, xnegatywne/2]).
 
 
-jest_to(tester) :-
-  zna(programowanie),
-  zna(testowanie),
-  zna(metodyki_wytwarzania_oprogramowania),
-  jest(dokladny).
+jest_to(tester_manualny) :-
+  jest(tester),
+  jest(eksperymentator),
+  pozytywne(jest, cierpliwy).
+
+jest_to(tester_automatyczny) :-
+  jest(tester),
+  pozytywne(zna, programowanie),
+  pozytywne(zna, metodyki_wytwarzania_oprogramowania).
 
 jest_to(programista) :-
-  zna(programowanie),
-  zna(metodyki_wytwarzania_oprogramowania).
+  jest(umyslem_scislym),
+  pozytywne(zna, programowanie),
+  pozytywne(zna, metodyki_wytwarzania_oprogramowania),
+  pozytywne(jest, schematyczny).
 
 jest_to(project_menadzer) :-
-  zna(metodyki_wytwarzania_oprogramowania),
-  zna(praca_w_grupie),
+  jest(lider),
   jest(negocjator),
-  jest(wizjoner),
-  jest(asertywny),
-  jest(lider).
+  pozytywne(zna, metodyki_wytwarzania_oprogramowania).
 
 jest_to(architekt) :-
   jest_to(programista),
-  jest_to(tester).
+  jest_to(tester),
+  pozytywne(ma, duzy_staz).
 
-jest_to(pr) :-
-  zna(praca_w_grupie),
-  jest(negocjator),
-  jest(wizjoner),
+jest_to(frontend) :-
   jest(esteta),
-  jest(asertywny).
-
-jest_to(administrator) :-
-  zna(sieci).
-
-jest_to(analityk) :-
-  zna(statystyka),
-  jest(eksperymentator).
-
-jest_to(badacz) :-
-  zna(programowanie),
-  zna(statystyka),
-  jest(eksperymentator),
-  jest(ryzykant).
-
-jest_to(hr) :-
-  jest(negocjator),
   jest(wizjoner),
-  jest(esteta),
-  jest(asertywny).
+  pozytywne(jest, cierpliwy),
+  pozytywne(sie, angazuje).
 
-jest_to(grafik) :-
-  zna(photoshop),
-  jest(dokladny),
-  jest(esteta).
-
-
-zna(praca_w_grupie) :-
-  pozytywne(zna, praca_w_grupie).
-
-zna(programowanie) :-
+jest_to(backend) :-
+  jest(umyslem_scislym),
+  pozytywne(jest, dokladny),
   pozytywne(zna, programowanie).
 
-zna(testowanie) :-
-  pozytywne(zna, testowanie).
+jest_to(producent) :-
+  jest(wizjoner),
+  jest(negocjator),
+  not(jest(ryzykant)),
+  pozytywne(ma, duzy_staz).
 
-zna(metodyki_wytwarzania_oprogramowania) :-
-  pozytywne(zna, metodyki_wytwarzania_oprogramowania).
-
-zna(photoshop) :-
-  pozytywne(zna, photoshop).
-
-zna(statystyka) :-
-  pozytywne(zna, statystyka).
-
-zna(sieci) :-
-  pozytywne(zna, sieci).
-
-jest(asertywny) :-
+jest_to(pr) :-
+  jest(wizjoner),
+  jest(esteta),
+  pozytywne(zna, praca_w_grupie),
+  pozytywne(dobrze, negocjuje),
   pozytywne(jest, asertywny).
 
+jest_to(administrator) :-
+  pozytywne(zna, sieci).
+
+jest_to(analityk) :-
+  jest(eksperymentator),
+  pozytywne(zna, statystyka).
+
+jest_to(badacz) :-
+  jest(ryzykant),
+  jest(eksperymentator),
+  pozytywne(zna, programowanie),
+  pozytywne(zna, statystyka).
+
+jest_to(hr) :-
+  jest(wizjoner),
+  jest(esteta),
+  pozytywne(dobrze, negocjuje),
+  pozytywne(jest, asertywny).
+
+jest_to(grafik) :-
+  jest(esteta),
+  pozytywne(zna,photoshop).
+
+
+
+jest(tester) :-
+  jest(umyslem_scislym),
+  pozytywne(jest, dokladny),
+  pozytywne(zna, testowanie).
+
 jest(negocjator) :-
-  pozytywne(dobrze, negocjuje).
+  pozytywne(jest, asertywny),
+  pozytywne(jest, odporny_na_stres),
+  pozytywne(zna, praca_w_grupie),
+  pozytywne(dobrze, negocjuje),
+  pozytywne(lubi, samorozwoj).
 
 jest(esteta) :-
-  pozytywne(projektuje, ładne_rzeczy).
-
-jest(dokladny) :-
-  pozytywne(jest, dokładny).
-
-jest(odporny_na_stres) :-
-  pozytywne(jest, odporny_na_stres).
+  pozytywne(projektuje, ladne_rzeczy),
+  pozytywne(jest, dokladny).
 
 jest(ryzykant) :-
-  pozytywne(lubi, ryzyko).
+  pozytywne(lubi, ryzyko),
+  negatywne(patrzy, przyszlosciowo).
 
 jest(eksperymentator) :-
-  pozytywne(lubi, eksperymentowac).
+  pozytywne(lubi, ryzyko),
+  pozytywne(patrzy, przyszlosciowo).
 
 jest(lider) :-
   jest(wizjoner),
-  pozytywne(sie, angazuje).
+  pozytywne(sie, angazuje),
+  pozytywne(jest, asertywny).
 
 jest(elastyczny) :-
-  negatywne(lubi, sztywne_godziny_pracy).
+  negatywne(lubi, sztywne_godziny_pracy),
+  negatywne(jest, schematyczny).
 
 jest(wizjoner) :-
-  pozytywne(mysli, przyszlosciowo).
+  pozytywne(patrzy, przyszlosciowo),
+  pozytywne(lubi, eksperymentowac),
+  negatywne(jest, schematyczny).
+
+jest(umyslem_scislym) :-
+  pozytywne(umie, matematyke);
+  pozytywne(mysli, logicznie).
 
 
 pozytywne(X, Y) :-
