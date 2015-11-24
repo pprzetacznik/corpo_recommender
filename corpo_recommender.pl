@@ -1,54 +1,67 @@
 :- module(corpo_recommender,[wykonaj]).
 
-:- dynamic([xpozytywne/2, xnegatywne/2]).
+:- dynamic([xpozytywne/2, xnegatywne/2, xjest/1, xjest_to/1, xwhy/2, xhow/4]).
 
+przygotuj :-
+  assertz(xpozytywne('')),
+  assertz(xnegatywne('')),
+  assertz(xjest('')),
+  assertz(xjest_to('')),
+  assertz(xwhy('','')),
+  assertz(xhow('','','','')).
+
+kjest_to(X) :-
+  jest_to(X),
+  (xjest_to(X);
+  (assertz(xjest_to(X)),
+  assertz(xwhy('jest_to', X)))).
 
 jest_to(tester_manualny) :-
-  jest(tester),
-  jest(eksperymentator),
+  kjest(tester),
+  kjest(eksperymentator),
   pozytywne(jest, cierpliwy).
 
 jest_to(tester_automatyczny) :-
-  jest(tester),
+  kjest(tester),
   pozytywne(zna, programowanie),
   pozytywne(zna, metodyki_wytwarzania_oprogramowania).
 
 jest_to(programista) :-
-  jest(umyslem_scislym),
+  kjest(umyslem_scislym),
   pozytywne(zna, programowanie),
   pozytywne(zna, metodyki_wytwarzania_oprogramowania),
   pozytywne(jest, schematyczny).
 
 jest_to(project_menadzer) :-
-  jest(lider),
-  jest(negocjator),
+  kjest(lider),
+  kjest(negocjator),
   pozytywne(zna, metodyki_wytwarzania_oprogramowania).
 
 jest_to(architekt) :-
-  jest_to(programista),
-  jest_to(tester),
+  kjest_to(programista),
+  kjest(tester),
   pozytywne(ma, duzy_staz).
 
 jest_to(frontend) :-
-  jest(esteta),
-  jest(wizjoner),
+  kjest(esteta),
+  kjest(wizjoner),
   pozytywne(jest, cierpliwy),
   pozytywne(sie, angazuje).
 
 jest_to(backend) :-
-  jest(umyslem_scislym),
+  kjest(umyslem_scislym),
   pozytywne(jest, dokladny),
   pozytywne(zna, programowanie).
 
 jest_to(producent) :-
-  jest(wizjoner),
-  jest(negocjator),
+  kjest(wizjoner),
+  kjest(negocjator),
   not(jest(ryzykant)),
   pozytywne(ma, duzy_staz).
 
 jest_to(pr) :-
-  jest(wizjoner),
-  jest(esteta),
+  kjest(wizjoner),
+  kjest(esteta),
   pozytywne(zna, praca_w_grupie),
   pozytywne(dobrze, negocjuje),
   pozytywne(jest, asertywny).
@@ -57,26 +70,32 @@ jest_to(administrator) :-
   pozytywne(zna, sieci).
 
 jest_to(analityk) :-
-  jest(eksperymentator),
+  kjest(eksperymentator),
   pozytywne(zna, statystyka).
 
 jest_to(badacz) :-
-  jest(ryzykant),
-  jest(eksperymentator),
+  kjest(ryzykant),
+  kjest(eksperymentator),
   pozytywne(zna, programowanie),
   pozytywne(zna, statystyka).
 
 jest_to(hr) :-
-  jest(wizjoner),
-  jest(esteta),
+  kjest(wizjoner),
+  kjest(esteta),
   pozytywne(dobrze, negocjuje),
   pozytywne(jest, asertywny).
 
 jest_to(grafik) :-
-  jest(esteta),
+  kjest(esteta),
   pozytywne(zna,photoshop).
 
 
+
+kjest(X) :-
+  assertz(xwhy('jest', X)),
+  jest(X),
+  (xjest(X);
+  assertz(xjest(X))).
 
 jest(tester) :-
   jest(umyslem_scislym),
@@ -135,44 +154,142 @@ negatywne(X, Y) :-
   not(xpozytywne(X, Y)),
   pytaj(X, Y, nie).
 
-pytaj(X, Y, tak) :-
+pytaj(X, Y, K) :-
   !, write(X), write(' nasz_pracownik '), write(Y), write(' ? (t/n)\n'),
   readln([Replay]),
-  pamietaj(X, Y, Replay),
-  odpowiedz(Replay, tak).
+  not(zakoncz(Replay)),
 
+  (pamietaj(X, Y, Replay),
+  odpowiedz(Replay, K);
 
-pytaj(X, Y, nie) :-
-  !, write(X), write(' nasz_pracownik '), write(Y), write(' ? (t/n)\n'),
-  readln([Replay]),
-  pamietaj(X, Y, Replay),
-  odpowiedz(Replay, nie).
+  (odpowiedz(Replay, what),
+  pytaj(X, Y, K));
 
-odpowiedz(Replay, tak):-
+  (odpowiedz(Replay, how),
+  pytaj(X, Y, K));
+
+  (odpowiedz(Replay, why),
+  pytaj(X, Y, K));
+
+  (odpowiedz(Replay, help),
+  pytaj(X, Y, K))).
+
+odpowiedz(Replay, tak) :-
   sub_string(Replay, 0, _, _, 't').
 
-odpowiedz(Replay, nie):-
+odpowiedz(Replay, nie) :-
   sub_string(Replay, 0, _, _, 'n').
+
+odpowiedz(Replay, end) :-
+  sub_string(Replay, 0, _, _, 'end').
+
+odpowiedz(Replay, what) :-
+  sub_string(Replay, 0, _, _, 'what'),
+  podaj_what.
+
+odpowiedz(Replay, why) :-
+  sub_string(Replay, 0, _, _, 'why'),
+  podaj_why.
+
+odpowiedz(Replay, how) :-
+  sub_string(Replay, 0, _, _, 'how'),
+  podaj_how.
+
+odpowiedz(Replay, help) :-
+  sub_string(Replay, 0, _, _, 'help'),
+  help.
+
+help :-
+  write('help - pomoc\n'),
+  write('what - lista dotychczas ustalonych faktow (symptomy, fakty posrednie, hipoteza)\n'),
+  write('how - lista what poszerzona o sposob w jaki uzyskano dany fakt (odpowiedz na symptom, reguly)\n'),
+  write('why - dlaczego system pyta o dany symptom (stos regul przetwarzanych, ktore wygenerowaly pytanie)\n'),
+  write('end - zakonczenie testu, usuwane zostaja wszystkie odpowiedzi uzytkownika\n\n').
+
+zakoncz(Replay) :-
+  odpowiedz(Replay, end),
+  podaj_end,
+  resetuj_stan,
+  abort.
 
 pamietaj(X, Y, Replay) :-
   odpowiedz(Replay, tak),
-  assertz(xpozytywne(X, Y)).
+  assertz(xpozytywne(X, Y)),
+  assertz(xhow(X, Y, 'tak')).
 
 pamietaj(X, Y, Replay) :-
   odpowiedz(Replay, nie),
-  assertz(xnegatywne(X, Y)).
+  assertz(xnegatywne(X, Y)),
+  assertz(xhow(X, Y, 'nie')).
 
-wyczysc_fakty :-
+podaj_what :-
+  write('WHAT:\n'),
+  write('Hipotezy:\n'),
+  setof(K1, xjest_to(K1), L1),
+  drukuj(L1),
+
+  write('\n\nFakty posrednie:\n'),
+  setof(K2, xjest(K2), L2),
+  drukuj(L2),
+
+  write('\n\nSymptomy na tak:\n'),
+  setof(K3, xpozytywne(K3), L3),
+  drukuj(L3),
+
+  write('\n\nSymptomy na nie:\n'),
+  setof(K4, xnegatywne(K4), L4),
+  drukuj(L4),
+  write('KONIEC WHAT\n').
+
+podaj_why :-
+  write('WHY:\n'),
+  write('Stos zapytan:\n'),
+  bagof([K00, K01], xwhy(K00,K01), L00),
+  drukuj(L00),
+  write('KONIEC WHY\n').
+
+podaj_how :-
+  podaj_what,
+  write('HOW:\n'),
+  write('Skad sie wziely fakty posrednie:\n'),
+  setof([Fakt1, Fakt2, Fakt3, Fakt4], (xhow(Fakt1, Fakt2, Fakt3, Fakt4), xjest(Fakt1)), Bufor),
+  drukuj(Bufor),
+  write('\n\nSkad sie wziely hipotezy:\n'),
+  setof([H1, H2, H3, H4], (xhow(H1, H2, H3, H4), xjest_to(H1)), B2),
+  drukuj(B2),
+  write('KONIEC HOW\n').
+
+podaj_end :-
+  setof(A, kjest_to(A), B),
+  setof(Y, kjest(Y), Z),
+  write('Twoj pracownik jest:\n'), drukuj(Z), nl,
+  write('Twoj pracownik moze zostac:\n'), drukuj(B), nl,
+  resetuj_stan,
+  abort.
+
+resetuj_stan :-
   write('\n\nNacisnij enter aby zakonczyc\n'),
   retractall(xpozytywne(_, _)),
   retractall(xnegatywne(_, _)),
+  retractall(xwhy(_, _)),
+  retractall(xhow(_, _, _, _)),
   readln(_).
 
+drukuj([]).
+drukuj( [X|Y] ) :-
+  write('- '), write(X), write(',\n'), drukuj(Y).
+
 wykonaj :-
-  jest_to(X), !,
-  write('Twoj pracownik moze byc '), write(X), nl,
-  wyczysc_fakty.
+  przygotuj,
+  setof(A, kjest_to(A), B),
+  setof(Y, kjest(Y), Z),
+  write('Twoj pracownik jest:\n'), drukuj(Z), nl,
+  write('Twoj pracownik moze zostac:\n'), drukuj(B), nl,
+  % jest_to(X), !,
+  % write('Twoj pracownik moze byc '), write(X), nl,
+  resetuj_stan.
 
 wykonaj :-
   write('\nNie jestem w stanie odgadnac, '),
-  write('gdzie moglby pracowac Twoj pracownik.\n\n'), wyczysc_fakty.
+  write('gdzie moglby pracowac Twoj pracownik.\n\n'),
+  resetuj_stan.
