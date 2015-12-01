@@ -234,7 +234,7 @@ podaj_why :-
   write('WHY:\n'),
   write('Stos zapytan:\n'),
   bagof([K00, K01], xwhy(K00,K01), L00),
-  drukuj(L00),
+  drukuj_bez_glowy(L00),
   write('KONIEC WHY\n').
 
 podaj_how :-
