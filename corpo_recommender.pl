@@ -257,7 +257,7 @@ resetuj_stan :-
   readln(_).
 
 drukuj_bez_glowy([_|T]) :-
-  drukuj([T]).
+  drukuj(T).
 
 drukuj([]).
 drukuj([X|Y]) :-
