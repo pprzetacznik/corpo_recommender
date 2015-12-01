@@ -1,6 +1,6 @@
 :- module(corpo_recommender,[wykonaj]).
 
-:- dynamic([xpozytywne/2, xnegatywne/2, xjest/1, xjest_to/1, xwhy/2, xhow/4]).
+:- dynamic([xpozytywne/2, xnegatywne/2, xjest/1, xjest_to/1, xwhy/2, xhow/3]).
 
 przygotuj :-
   assertz(xpozytywne('', '')),
@@ -8,7 +8,7 @@ przygotuj :-
   assertz(xjest('')),
   assertz(xjest_to('')),
   assertz(xwhy('','')),
-  assertz(xhow('','','','')).
+  assertz(xhow('','','')).
 
 kjest_to(X) :-
   jest_to(X),
@@ -241,11 +241,13 @@ podaj_how :-
   podaj_what,
   write('HOW:\n'),
   write('Skad sie wziely fakty posrednie:\n'),
-  setof([Fakt1, Fakt2, Fakt3, Fakt4], (xhow(Fakt1, Fakt2, Fakt3, Fakt4), xjest(Fakt1)), Bufor),
-  drukuj(Bufor),
-  write('\n\nSkad sie wziely hipotezy:\n'),
-  setof([H1, H2, H3, H4], (xhow(H1, H2, H3, H4), xjest_to(H1)), B2),
-  drukuj(B2),
+  % bagof([Fakt1, Fakt2, Fakt3], (xhow(Fakt1, Fakt2, Fakt3), xjest(Fakt1)), B1),
+  bagof([Fakt1, Fakt2, Fakt3], (xhow(Fakt1, Fakt2, Fakt3)), B1),
+  drukuj_bez_glowy(B1),
+  write('\nSkad sie wziely hipotezy:\n'),
+  % bagof([H1, H2, H3], (xhow(H1, H2, H3), xjest_to(H1)), B2),
+  bagof([H1, H2, H3], (xhow(H1, H2, H3)), B2),
+  drukuj_bez_glowy(B2),
   write('KONIEC HOW\n').
 
 resetuj_stan :-
