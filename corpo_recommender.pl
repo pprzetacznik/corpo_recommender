@@ -203,31 +203,31 @@ help :-
 
 pamietaj(X, Y, Replay) :-
   odpowiedz(Replay, tak),
-  assertz(xpozytywne(X, Y)),
+  assertz(xpozytywne(Y)),
   assertz(xhow(X, Y, 'tak')).
 
 pamietaj(X, Y, Replay) :-
   odpowiedz(Replay, nie),
-  assertz(xnegatywne(X, Y)),
+  assertz(xnegatywne(Y)),
   assertz(xhow(X, Y, 'nie')).
 
 podaj_what :-
   write('WHAT:\n'),
   write('Hipotezy:\n'),
   setof(K1, xjest_to(K1), L1),
-  drukuj(L1),
+  drukuj_bez_glowy(L1),
 
-  write('\n\nFakty posrednie:\n'),
+  write('\nFakty posrednie:\n'),
   setof(K2, xjest(K2), L2),
-  drukuj(L2),
+  drukuj_bez_glowy(L2),
 
-  write('\n\nSymptomy na tak:\n'),
+  write('\nSymptomy na tak:\n'),
   setof(K3, xpozytywne(K3), L3),
-  drukuj(L3),
+  drukuj_bez_glowy(L3),
 
-  write('\n\nSymptomy na nie:\n'),
+  write('\nSymptomy na nie:\n'),
   setof(K4, xnegatywne(K4), L4),
-  drukuj(L4),
+  drukuj_bez_glowy(L4),
   write('KONIEC WHAT\n').
 
 podaj_why :-
@@ -256,8 +256,11 @@ resetuj_stan :-
   retractall(xhow(_, _, _, _)),
   readln(_).
 
+drukuj_bez_glowy([_|T]) :-
+  drukuj([T]).
+
 drukuj([]).
-drukuj( [X|Y] ) :-
+drukuj([X|Y]) :-
   write('- '), write(X), write(',\n'), drukuj(Y).
 
 wykonaj :-
