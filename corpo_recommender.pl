@@ -3,8 +3,8 @@
 :- dynamic([xpozytywne/2, xnegatywne/2, xjest/1, xjest_to/1, xwhy/2, xhow/4]).
 
 przygotuj :-
-  assertz(xpozytywne('')),
-  assertz(xnegatywne('')),
+  assertz(xpozytywne('', '')),
+  assertz(xnegatywne('', '')),
   assertz(xjest('')),
   assertz(xjest_to('')),
   assertz(xwhy('','')),
@@ -203,12 +203,12 @@ help :-
 
 pamietaj(X, Y, Replay) :-
   odpowiedz(Replay, tak),
-  assertz(xpozytywne(Y)),
+  assertz(xpozytywne(X, Y)),
   assertz(xhow(X, Y, 'tak')).
 
 pamietaj(X, Y, Replay) :-
   odpowiedz(Replay, nie),
-  assertz(xnegatywne(Y)),
+  assertz(xnegatywne(X, Y)),
   assertz(xhow(X, Y, 'nie')).
 
 podaj_what :-
@@ -222,11 +222,11 @@ podaj_what :-
   drukuj_bez_glowy(L2),
 
   write('\nSymptomy na tak:\n'),
-  setof(K3, xpozytywne(K3), L3),
+  bagof([K31, K32], xpozytywne(K31, K32), L3),
   drukuj_bez_glowy(L3),
 
   write('\nSymptomy na nie:\n'),
-  setof(K4, xnegatywne(K4), L4),
+  bagof([K41, K42], xnegatywne(K41, K42), L4),
   drukuj_bez_glowy(L4),
   write('KONIEC WHAT\n').
 
