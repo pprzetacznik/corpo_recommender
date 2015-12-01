@@ -157,7 +157,6 @@ negatywne(X, Y) :-
 pytaj(X, Y, K) :-
   !, write(X), write(' nasz_pracownik '), write(Y), write(' ? (t/n)\n'),
   readln([Replay]),
-  not(zakoncz(Replay)),
 
   (pamietaj(X, Y, Replay),
   odpowiedz(Replay, K);
@@ -180,9 +179,6 @@ odpowiedz(Replay, tak) :-
 odpowiedz(Replay, nie) :-
   sub_string(Replay, 0, _, _, 'n').
 
-odpowiedz(Replay, end) :-
-  sub_string(Replay, 0, _, _, 'end').
-
 odpowiedz(Replay, what) :-
   sub_string(Replay, 0, _, _, 'what'),
   podaj_what.
@@ -203,14 +199,7 @@ help :-
   write('help - pomoc\n'),
   write('what - lista dotychczas ustalonych faktow (symptomy, fakty posrednie, hipoteza)\n'),
   write('how - lista what poszerzona o sposob w jaki uzyskano dany fakt (odpowiedz na symptom, reguly)\n'),
-  write('why - dlaczego system pyta o dany symptom (stos regul przetwarzanych, ktore wygenerowaly pytanie)\n'),
-  write('end - zakonczenie testu, usuwane zostaja wszystkie odpowiedzi uzytkownika\n\n').
-
-zakoncz(Replay) :-
-  odpowiedz(Replay, end),
-  podaj_end,
-  resetuj_stan,
-  abort.
+  write('why - dlaczego system pyta o dany symptom (stos regul przetwarzanych, ktore wygenerowaly pytanie)\n').
 
 pamietaj(X, Y, Replay) :-
   odpowiedz(Replay, tak),
@@ -259,14 +248,6 @@ podaj_how :-
   drukuj(B2),
   write('KONIEC HOW\n').
 
-podaj_end :-
-  setof(A, kjest_to(A), B),
-  setof(Y, kjest(Y), Z),
-  write('Twoj pracownik jest:\n'), drukuj(Z), nl,
-  write('Twoj pracownik moze zostac:\n'), drukuj(B), nl,
-  resetuj_stan,
-  abort.
-
 resetuj_stan :-
   write('\n\nNacisnij enter aby zakonczyc\n'),
   retractall(xpozytywne(_, _)),
@@ -281,12 +262,12 @@ drukuj( [X|Y] ) :-
 
 wykonaj :-
   przygotuj,
-  setof(A, kjest_to(A), B),
-  setof(Y, kjest(Y), Z),
-  write('Twoj pracownik jest:\n'), drukuj(Z), nl,
-  write('Twoj pracownik moze zostac:\n'), drukuj(B), nl,
-  % jest_to(X), !,
-  % write('Twoj pracownik moze byc '), write(X), nl,
+  % setof(A, kjest_to(A), B),
+  % setof(Y, kjest(Y), Z),
+  % write('Twoj pracownik jest:\n'), drukuj(Z), nl,
+  % write('Twoj pracownik moze zostac:\n'), drukuj(B), nl,
+  jest_to(X), !,
+  write('Twoj pracownik moze byc '), write(X), nl,
   resetuj_stan.
 
 wykonaj :-
